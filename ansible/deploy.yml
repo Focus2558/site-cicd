@@ -1,0 +1,16 @@
+---
+- hosts: webserver
+  tasks:
+
+    - name: Construire l'image Docker du site
+      command: docker build -t mon-site:latest .
+      args:
+        chdir: "{{ playbook_dir }}/.."
+
+    - name: Supprimer le conteneur site-web s'il existe
+      command: docker rm -f site-web
+      ignore_errors: yes
+
+    - name: Lancer le nouveau conteneur
+      command: docker run -d --name site-web -p 8082:80 mon-site:latest
+
